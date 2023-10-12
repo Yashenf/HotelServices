@@ -6,12 +6,14 @@ import com.travelGo.web.repo.HotelRepo;
 import com.travelGo.web.service.aws.s3.S3Service;
 import com.travelGo.web.service.core.HotelImageService;
 import com.travelGo.web.util.exception.AwsS3ImageUpOrDownException;
+import com.travelGo.web.util.exception.EntryNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 @Service
 public class HotelImageSurviveImpl implements HotelImageService {
@@ -36,7 +38,12 @@ public class HotelImageSurviveImpl implements HotelImageService {
 
     @Override
     public String getUrl(String id) {
-        return repo.findById(id).get().getFileUrl();
+        try{
+            return repo.findById(id).get().getFileUrl();
+        }catch (NoSuchElementException e){
+            throw new EntryNotFoundException("No Such Element");
+        }
+
     }
 
     @Override

@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/v1/hotels/img")
 public class HotelImageController {
 
-    private HotelImageService service;
+    private final HotelImageService service;
 
     @Autowired
     public HotelImageController(HotelImageService service) {
@@ -20,12 +20,20 @@ public class HotelImageController {
     }
 
     @PostMapping("{id}")
-    public void uploadHotelImage(
+    public ResponseEntity<StandardResponse> uploadHotelImage(
             @PathVariable String id,
             @RequestParam("file") MultipartFile file
     ) {
         String url = service.uploadImage(id, file);
         saveInDb(id,url);
+
+        return new ResponseEntity<StandardResponse>(
+                new StandardResponse(
+                        200,
+                        "Url of Hotel img",
+                        url
+                ), HttpStatus.OK
+        );
 
     }
     public void saveInDb(String id, String url) {

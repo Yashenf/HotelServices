@@ -58,18 +58,19 @@ public class HotelController {
                 new StandardResponse(
                         204,
                         "Updated!",
-                        hotel
-                ), HttpStatus.NO_CONTENT
+                        modified
+                ), HttpStatus.OK
         );
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<StandardResponse> deleteHotel(@PathVariable String id){
+        String remove = service.remove(id);
         return new ResponseEntity<StandardResponse>(
                 new StandardResponse(
                         200,
                         "Deleted!",
-                        id
+                        remove
                 ), HttpStatus.OK
         );
     }

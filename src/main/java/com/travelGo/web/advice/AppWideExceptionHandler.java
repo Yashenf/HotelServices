@@ -1,6 +1,7 @@
 package com.travelGo.web.advice;
 
 import com.travelGo.web.util.exception.AwsS3ImageUpOrDownException;
+import com.travelGo.web.util.exception.DuplicateEntryException;
 import com.travelGo.web.util.exception.EntryNotFoundException;
 import com.travelGo.web.util.response.StandardResponse;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,17 @@ public class AppWideExceptionHandler {
                         404,
                         exception.getMessage(),
                         "Something went wrong. check internet connection and AWS Credentials"
+                ), HttpStatus.BAD_REQUEST
+        );
+    }
+
+    @ExceptionHandler(DuplicateEntryException.class)
+    public ResponseEntity<StandardResponse> handleDuplicates(DuplicateEntryException exception){
+        return new ResponseEntity(
+                new StandardResponse(
+                        400,
+                        exception.getMessage(),
+                        exception.getMessage()+" Duplicate Entry. Already Have AnAccount or Recode. You Can Update It."
                 ), HttpStatus.BAD_REQUEST
         );
     }

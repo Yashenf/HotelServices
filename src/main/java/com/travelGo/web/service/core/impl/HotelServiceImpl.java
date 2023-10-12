@@ -6,6 +6,7 @@ import com.travelGo.web.model.Hotel;
 import com.travelGo.web.repo.HotelRepo;
 import com.travelGo.web.service.aws.s3.S3Service;
 import com.travelGo.web.service.core.HotelService;
+import com.travelGo.web.util.exception.DuplicateEntryException;
 import com.travelGo.web.util.exception.EntryNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +35,12 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     public Hotel create(HotelReqDTO hotel) {
+
+        Optional<Hotel> byId = hotelRepo.findById(hotel.getId());
+        if (byId.isPresent()){
+            throw new DuplicateEntryException(hotel.getId()+" Registered Already.");
+        }
+
         Hotel entity = new Hotel(
                 hotel.getId(),
                 hotel.getHotelName(),
@@ -71,6 +78,12 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     public Hotel modify(HotelReqDTO hotel) {
+
+        Optional<Hotel> byId = hotelRepo.findById(hotel.getId());
+        if (byId.isEmpty()){
+            throw new EntryNotFoundException(hotel.getId()+" Is Not A Registered Account.");
+        }
+
         Hotel entity = new Hotel(
                 hotel.getId(),
                 hotel.getHotelName(),
